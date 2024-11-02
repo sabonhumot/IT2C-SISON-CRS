@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.time.LocalDate;
 
 public class config {
     //Connection Method to SQLITE
@@ -15,7 +16,7 @@ public class config {
         try {
             Class.forName("org.sqlite.JDBC"); // Load the SQLite JDBC driver
             con = DriverManager.getConnection("jdbc:sqlite:crps.db"); // Establish connection
-            System.out.println("Connection Successful");
+            System.out.println("");
         } catch (Exception e) {
             System.out.println("Connection Failed: " + e);
         }
@@ -285,11 +286,11 @@ public class config {
             System.out.println("Error fetching unit details for payment: " + e.getMessage());
         }
     }
-    
+
     public void generateIndividualReport(int tenantId) {
         String tenantQuery = "SELECT * FROM tenants WHERE id = ?";
-        String unitQuery = "SELECT * FROM units WHERE tenant_id = ?";
-        String paymentQuery = "SELECT payment_date, amount_paid, payment_status FROM payments WHERE tenant_id = ?";
+        String unitQuery = "SELECT * FROM units WHERE unit_id = ?";
+        String paymentQuery = "SELECT payment_date, amount_paid, status FROM rental_payments WHERE tenant_id = ?";
 
         try (Connection conn = config.connectDB()) {
             // Fetch Tenant Info
@@ -331,7 +332,7 @@ public class config {
                 try (ResultSet rs = pstmt.executeQuery()) {
                     while (rs.next()) {
                         System.out.printf("Payment Date: %s | Amount Paid: %s | Status: %s\n",
-                                rs.getString("payment_date"), rs.getDouble("amount_paid"), rs.getString("payment_status"));
+                                rs.getString("payment_date"), rs.getDouble("amount_paid"), rs.getString("status"));
                     }
                 }
             }
@@ -341,4 +342,35 @@ public class config {
         }
     }
 
+    public void generateLeaseDates(int unitId) {
+   
+
+        String sql = "SELECT lease_terms FROM units WHERE unit_id = ?";
+        
+
+        try (Connection conn = connectDB();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, unitId);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+
+                    long leaseTerms = rs.getLong("lease_terms");
+
+                    LocalDate leaseStart = LocalDate.now();
+                    System.out.printf("- Lease Start: %s", leaseStart);
+                    
+                    LocalDate leaseEnd = leaseStart.plusMonths(rs.getLong("lease_terms"));
+                    System.out.printf("\n- Lease End: %s", leaseEnd);
+
+                } else {
+                    System.out.printf("No unit found with ID: %s", unitId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching unit details: " + e.getMessage());
+
+        }
+    }
 }

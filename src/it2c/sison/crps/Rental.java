@@ -54,14 +54,18 @@ public class Rental {
 
         conf.reservationConfirmation(unum);
         conf.leaseAgreement(unum);
+        
+        conf.generateLeaseDates(unum);
 
         System.out.print("\nWould you like to proceed to payment? (yes/no): ");
         String response = input.next();
 
         if (response.equalsIgnoreCase("yes")) {
             String sql2 = "UPDATE units SET u_status = 'Occupied' WHERE unit_id = ?";
-
+            String sql3 = "UPDATE units SET lease_start ?, lease_end = ? WHERE unit_id = ?";
+            
             conf.updateRecord(sql2, unum);
+            conf.updateRecord(sql3, unum);
 
             conf.payment(unum);
         } else {
