@@ -295,15 +295,26 @@ public class config {
                 System.out.printf("Amount needed to pay: P%s\n", monthlyRental);
 
                 System.out.print("Enter amount to pay: ");
-                int pay = input.nextInt();
+                int pay = input.nextInt(); 
+                double change = 0.0;
+                
                 
                 while(pay < monthlyRental) {
                     System.out.print("Payment insufficient. Please try again: ");
                     pay = input.nextInt();
+                    
+                    if (pay > monthlyRental) {
+                        change = (double)pay - monthlyRental;
+                        
+                        System.out.printf("\nChange = P%.2f\n", change);                                            
+                    }
                 }
 
                 System.out.printf("You have successfully rented Unit No. %s\n", unitId);
-            }
+                
+            } 
+            
+            
         } catch (SQLException e) {
             System.out.println("Error fetching unit details for payment: " + e.getMessage());
         }
