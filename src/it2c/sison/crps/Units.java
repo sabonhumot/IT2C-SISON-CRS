@@ -36,8 +36,8 @@ public class Units {
 
     public void viewUnits() {
         String tqry = "SELECT * FROM units";
-        String[] hrds = {"Unit Number", "Unit Type", "Unit Footage", "Unit Floor Number", "Amenities", "Monthly Rental", "Status"};
-        String[] clmns = {"unit_id", "unit_type", "sqm", "floor_num", "amenities", "monthly_rental", "u_status"};
+        String[] hrds = {"Unit Number", "Unit Type", "Unit Footage", "Unit Floor Number", "Amenities", "Monthly Rental", "Lease Terms", "Status"};
+        String[] clmns = {"unit_id", "unit_type", "sqm", "floor_num", "amenities", "monthly_rental", "lease_terms", "u_status"};
 
         config conf = new config();
 
@@ -52,8 +52,9 @@ public class Units {
         System.out.print("Enter Unit ID: ");
         int id = input.nextInt();
         while (conf.getSingleValue(sql, id) == 0) {
-            System.out.print("Enter new Monthly Rental: ");
         }
+        
+        System.out.print("Enter new Monthly Rental: ");
         String monthly = input.next();
 
         System.out.print("Enter new Amenities Included: ");
@@ -76,7 +77,7 @@ public class Units {
 
         config conf = new config();
 
-        String sqlDelete = "DELETE FROM units WHERE id = ?";
+        String sqlDelete = "DELETE FROM units WHERE unit_id = ?";
 //        int studentIdToDelete = 1;
 
         conf.deleteRecord(sqlDelete, id);
@@ -131,7 +132,7 @@ public class Units {
                     System.out.println("Invalid option. Please try again.");
                     break;
             }
-            System.out.print("Continue to Main Menu? (yes/no): ");
+            System.out.print("Continue to Units Panel? (yes/no): ");
             response = input.next();
 
         } while (response.equalsIgnoreCase("yes"));

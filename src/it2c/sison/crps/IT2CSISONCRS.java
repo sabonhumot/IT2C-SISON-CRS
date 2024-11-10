@@ -1,6 +1,5 @@
 package it2c.sison.crps;
 
-import java.io.PrintStream;
 import java.util.Scanner;
 
 public class IT2CSISONCRS {

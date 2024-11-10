@@ -1,6 +1,7 @@
 package it2c.sison.crps;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -166,6 +167,7 @@ public class config {
     //-----------------------------------------------
     public double getSingleValue(String sql, Object... params) {
         double result = 0.0;
+
         try (Connection conn = connectDB();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -173,6 +175,7 @@ public class config {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 result = rs.getDouble(1);
+
             }
 
         } catch (SQLException e) {
@@ -221,12 +224,26 @@ public class config {
     }
 
     public void reservationConfirmation(int unitId) {
+        Scanner input = new Scanner(System.in);
+        config conf = new config();
+
+        String sql = "UPDATE units SET u_status = 'Reserved' WHERE unit_id = ?";
+
         System.out.println("-------------------------------------");
         System.out.println("|      RESERVATION CONFIRMATION     |");
         System.out.println("-------------------------------------");
 
-        System.out.printf("You have successfully reserved Unit %s.\n", unitId);
-        System.out.println("Please review the Lease Agreement.");
+        System.out.print("\n Would you like to reserve this unit? (yes/ no): ");
+        String choice = input.next();
+
+        if (choice.equalsIgnoreCase("yes")) {
+            System.out.printf("You have successfully reserved Unit %s.\n", unitId);
+            conf.updateRecord(sql, unitId);
+            System.out.println("Please review the Lease Agreement.");
+        } else {
+            System.out.println("You chose not to reserve this unit.");
+            System.exit(0);
+        }
 
     }
 
@@ -270,15 +287,20 @@ public class config {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
 
-                String monthlyRental = rs.getString("monthly_rental");
+                double monthlyRental = rs.getDouble("monthly_rental");
                 System.out.println("-------------------------------------");
                 System.out.println("|          PAYMENT PROCESS          |");
                 System.out.println("-------------------------------------");
 
-                System.out.printf("Amount needed to pay: %s\n", monthlyRental);
+                System.out.printf("Amount needed to pay: P%s\n", monthlyRental);
 
                 System.out.print("Enter amount to pay: ");
                 int pay = input.nextInt();
+                
+                while(pay < monthlyRental) {
+                    System.out.print("Payment insufficient. Please try again: ");
+                    pay = input.nextInt();
+                }
 
                 System.out.printf("You have successfully rented Unit No. %s\n", unitId);
             }
@@ -288,22 +310,64 @@ public class config {
     }
 
     public void generateIndividualReport(int tenantId) {
-        String tenantQuery = "SELECT * FROM tenants WHERE id = ?";
-        String unitQuery = "SELECT * FROM units WHERE unit_id = ?";
-        String paymentQuery = "SELECT payment_date, amount_paid, status FROM rental_payments WHERE tenant_id = ?";
+
+        config conf = new config();
+
+        System.out.println("\n-------------------------------------");
+        System.out.println("|      INDIVIDUAL RENTAL REPORT      |");
+        System.out.println("-------------------------------------");
+
+        String query = "SELECT t.id AS id, t.fname AS fname, t.lname AS lname, "
+                + "t.email, t.contact, u.unit_id, u.unit_type, u.monthly_rental, u.u_status, "
+                + "r.lease_start, r.lease_end, u.amenities, r.rental_id "
+                + "FROM tenants t "
+                + "JOIN rentals r ON t.id = r.tenant_id "
+                + "JOIN units u ON r.unit_id = u.unit_id "
+                + "WHERE t.id = ?";
 
         try (Connection conn = config.connectDB()) {
-            // Fetch Tenant Info
-            try (PreparedStatement pstmt = conn.prepareStatement(tenantQuery)) {
+
+            try (PreparedStatement pstmt = conn.prepareStatement(query)) {
                 pstmt.setInt(1, tenantId);
                 try (ResultSet rs = pstmt.executeQuery()) {
                     if (rs.next()) {
-                        System.out.println("\n-------------------------------------");
-                        System.out.println("|      INDIVIDUAL RENTAL REPORT      |");
-                        System.out.println("-------------------------------------");
-                        System.out.printf("Tenant ID: %d\n", tenantId);
-                        System.out.printf("Name: %s %s\n", rs.getString("fname"), rs.getString("lname"));
-                        System.out.printf("Contact: %s\n", rs.getString("email"));
+
+                        int id = rs.getInt("id");
+                        int rid = rs.getInt("rental_id");
+                        String firstName = rs.getString("fname");
+                        String lastName = rs.getString("lname");
+                        String email = rs.getString("email");
+                        String contact = rs.getString("contact");
+                        int unitId = rs.getInt("unit_id");
+                        String unitType = rs.getString("unit_type");
+                        double monthlyRental = rs.getDouble("monthly_rental");
+                        String unitStatus = rs.getString("u_status");
+                        String amenities = rs.getString("amenities");
+                        String leaseStart = rs.getString("lease_start");
+                        String leaseEnd = rs.getString("lease_end");
+
+                        System.out.printf("Rental ID: %d", rid);
+
+                        System.out.println("\n--------------------------------------------------------------");
+
+                        System.out.printf("\n-Tenant ID: %d", id);
+                        System.out.printf("\n-First Name: %s", firstName);
+                        System.out.printf("\n-Last Name: %s", lastName);
+                        System.out.printf("\n-Email: %s", email);
+                        System.out.printf("\n-Contact: %s", contact);
+                        System.out.println("\n--------------------------------------------------------------");
+                        System.out.printf("\n-Unit ID: %d", unitId);
+                        System.out.printf("\n-Unit Type: %s", unitType);
+                        System.out.printf("\n-Monthly Rental: %.2f", monthlyRental);
+                        System.out.printf("\n-Amenities: %s", amenities);
+                        conf.generateLeaseDates(unitId);
+                        System.out.printf("\n-Unit Status: %s", unitStatus);
+
+                        System.out.println("\n--------------------------------------------------------------");
+
+                        LocalDate repGen = LocalDate.now();
+                        System.out.printf("REPORT GENERATED ON %s\n", repGen);
+
                     } else {
                         System.out.println("Tenant not found.");
                         return;
@@ -311,31 +375,6 @@ public class config {
                 }
             }
 
-            // Fetch Unit Info
-            try (PreparedStatement pstmt = conn.prepareStatement(unitQuery)) {
-                pstmt.setInt(1, tenantId);
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    if (rs.next()) {
-                        System.out.printf("Unit Number: %s | Type: %s | Monthly Rent: %s\n",
-                                rs.getString("unit_id"), rs.getString("unit_type"), rs.getString("monthly_rental"));
-                        System.out.printf("Lease Start Date: %s | Lease End Date: %s\n",
-                                rs.getString("lease_start"), rs.getString("lease_end"));
-                        System.out.printf("Status: %s\n", rs.getString("u_status"));
-                    }
-                }
-            }
-
-            // Fetch Payment History
-            System.out.println("\n--- Payment History ---");
-            try (PreparedStatement pstmt = conn.prepareStatement(paymentQuery)) {
-                pstmt.setInt(1, tenantId);
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        System.out.printf("Payment Date: %s | Amount Paid: %s | Status: %s\n",
-                                rs.getString("payment_date"), rs.getDouble("amount_paid"), rs.getString("status"));
-                    }
-                }
-            }
             System.out.println("-------------------------------------\n");
         } catch (SQLException e) {
             System.out.println("Error generating individual report: " + e.getMessage());
@@ -343,16 +382,14 @@ public class config {
     }
 
     public void generateLeaseDates(int unitId) {
-   
 
         String sql = "SELECT lease_terms FROM units WHERE unit_id = ?";
-        
 
         try (Connection conn = connectDB();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, unitId);
-            
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
 
@@ -360,7 +397,7 @@ public class config {
 
                     LocalDate leaseStart = LocalDate.now();
                     System.out.printf("- Lease Start: %s", leaseStart);
-                    
+
                     LocalDate leaseEnd = leaseStart.plusMonths(rs.getLong("lease_terms"));
                     System.out.printf("\n- Lease End: %s", leaseEnd);
 
@@ -368,9 +405,61 @@ public class config {
                     System.out.printf("No unit found with ID: %s", unitId);
                 }
             }
+
         } catch (SQLException e) {
             System.out.println("Error fetching unit details: " + e.getMessage());
 
         }
+
     }
+
+    public void addRental(int tenantId, int unitId) {
+
+        String sql = "INSERT INTO rentals (tenant_id, unit_id, lease_start, lease_end) VALUES (?, ?, ?, ?)";
+
+        config conf = new config();
+
+        LocalDate leaseStart = LocalDate.now();
+        LocalDate leaseEnd = leaseStart.plusYears(1);
+
+        try (Connection conn = connectDB();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, tenantId);
+            pstmt.setInt(2, unitId);
+            pstmt.setDate(3, Date.valueOf(leaseStart));
+            pstmt.setDate(4, Date.valueOf(leaseEnd));
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("");
+            } else {
+                System.out.println("Failed to add rental record.");
+            }
+
+        } catch (SQLException e) {
+        }
+
+    }
+
+    public String getSingleValue1(String sql, Object... params) {
+        String result = null;
+
+        try (Connection conn = connectDB();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            setPreparedStatementValues(pstmt, params);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getString(1);
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving single value: " + e.getMessage());
+        }
+        return result;
+
+    }
+
 }

@@ -19,9 +19,13 @@ public class Tenants {
 
         System.out.print("Enter Contact Number: ");
         String cntctno = input.next();
+        
+        System.out.print("Enter Status: ");
+        String status = input.next();
 
-        String sql = "INSERT INTO tenants (fname, lname, email, contact) VALUES (?, ?, ?, ?)";
-        conf.addTenants(sql, fname, lname, email, cntctno);
+        String sql = "INSERT INTO tenants (fname, lname, email, contact, t_status) VALUES (?, ?, ?, ?, ?)";
+        conf.addTenants(sql, fname, lname, email, cntctno, status);
+              
 
     }
 
@@ -29,7 +33,7 @@ public class Tenants {
         String tqry = "SELECT * FROM tenants";
         String[] hrds = {"ID", "First Name", "Last Name", "Email", "Contact No.", "Status"};
         String[] clmns = {"id", "fname", "lname", "email", "contact", "t_status"};
-
+        
         config conf = new config();
 
         conf.viewRecords(tqry, hrds, clmns);
@@ -125,7 +129,7 @@ public class Tenants {
                     System.out.println("Invalid option. Please try again.");
                     break;
             }
-            System.out.print("Do you want to continue? (yes/no): ");
+            System.out.print("Continue to Tenants Panel? (yes/no): ");
             response = input.next();
 
         } while (response.equalsIgnoreCase("yes"));
