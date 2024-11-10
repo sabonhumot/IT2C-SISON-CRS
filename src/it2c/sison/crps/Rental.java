@@ -1,6 +1,5 @@
 package it2c.sison.crps;
 
-import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Rental {
@@ -99,53 +98,4 @@ public class Rental {
         
         conf.viewRecords(tqry, hrds, clmns);
     }
-
-//    private void rentalProcess() {
-//        Scanner input = new Scanner(System.in);
-//        
-//
-//        System.out.print("Enter Unit Number you want to rent: ");
-//        int unum = input.nextInt();
-//
-//        String sql1 = "SELECT unit_id FROM units WHERE unit_id = ?";
-//        while (conf.getSingleValue(sql1, unum) == 0) {
-//            System.out.print("Unit does not exist. Please try again: ");
-//            unum = input.nextInt();
-//        }
-//
-//        String sql = "SELECT u_status FROM units WHERE unit_id = ?";
-//        String uStatus = conf.getSingleValue1(sql, unum);
-//
-//        if ("Occupied".equalsIgnoreCase(uStatus)) {
-//            System.out.println("Unit is already occupied.");
-//            return;
-//        }
-//
-//        conf.fetchUnitDetails(unum);
-//
-//        conf.reservationConfirmation(unum);
-//
-//        conf.leaseAgreement(unum);
-//
-//        conf.generateLeaseDates(unum);
-//
-//        System.out.print("\nWould you like to proceed to payment? (yes/no): ");
-//        String response = input.next();
-//
-//        if (response.equalsIgnoreCase("yes")) {
-//            
-//            
-//            String sql2 = "UPDATE units SET u_status = 'Occupied' WHERE unit_id = ?"; 
-//            String sql4 = "UPDATE tenants SET t_status = 'Active' WHERE id = ?";
-//
-//            conf.updateRecord(sql2, unum);
-//            conf.updateLeaseDates(tid, unum);
-//            conf.updateRecord(sql4, tid);
-//
-//            conf.payment(unum);
-//        } else {
-//            System.out.println("You chose not to rent this unit.");
-//        }
-//
-//    }
 }

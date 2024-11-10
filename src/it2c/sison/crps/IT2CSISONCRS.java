@@ -64,7 +64,7 @@ public class IT2CSISONCRS {
                     System.out.println("Invalid option. Please try again.");
                     break;
             }
-            System.out.print("Do you want to continue? (yes/no): ");
+            System.out.print("Do you want to continue to Main Menu? (yes/no): ");
             response = input.next();
 
         } while (response.equalsIgnoreCase("yes"));

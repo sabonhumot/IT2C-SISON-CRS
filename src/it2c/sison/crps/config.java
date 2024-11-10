@@ -350,16 +350,16 @@ public class config {
 
                         System.out.println("\n--------------------------------------------------------------");
 
-                        System.out.printf("\n-Tenant ID: %d", id);
-                        System.out.printf("\n-First Name: %s", firstName);
-                        System.out.printf("\n-Last Name: %s", lastName);
-                        System.out.printf("\n-Email: %s", email);
-                        System.out.printf("\n-Contact: %s", contact);
+                        System.out.printf("\n -Tenant ID: %d", id);
+                        System.out.printf("\n -First Name: %s", firstName);
+                        System.out.printf("\n -Last Name: %s", lastName);
+                        System.out.printf("\n -Email: %s", email);
+                        System.out.printf("\n -Contact: %s", contact);
                         System.out.println("\n--------------------------------------------------------------");
-                        System.out.printf("\n-Unit ID: %d", unitId);
-                        System.out.printf("\n-Unit Type: %s", unitType);
-                        System.out.printf("\n-Monthly Rental: %.2f", monthlyRental);
-                        System.out.printf("\n-Amenities: %s", amenities);
+                        System.out.printf("\n -Unit ID: %d", unitId);
+                        System.out.printf("\n -Unit Type: %s", unitType);
+                        System.out.printf("\n -Monthly Rental: %.2f", monthlyRental);
+                        System.out.printf("\n -Amenities: %s", amenities);
                         conf.generateLeaseDates(unitId);
                         System.out.printf("\n-Unit Status: %s", unitStatus);
 
@@ -375,7 +375,7 @@ public class config {
                 }
             }
 
-            System.out.println("-------------------------------------\n");
+            System.out.println("--------------------------------------------------------------------------\n");
         } catch (SQLException e) {
             System.out.println("Error generating individual report: " + e.getMessage());
         }
