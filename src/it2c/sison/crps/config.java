@@ -295,26 +295,24 @@ public class config {
                 System.out.printf("Amount needed to pay: P%s\n", monthlyRental);
 
                 System.out.print("Enter amount to pay: ");
-                int pay = input.nextInt(); 
+                int pay = input.nextInt();
                 double change = 0.0;
-                
-                
-                while(pay < monthlyRental) {
+
+                while (pay < monthlyRental) {
                     System.out.print("Payment insufficient. Please try again: ");
                     pay = input.nextInt();
-                    
+
                     if (pay > monthlyRental) {
-                        change = (double)pay - monthlyRental;
-                        
-                        System.out.printf("\nChange = P%.2f\n", change);                                            
+                        change = (double) pay - monthlyRental;
+
+                        System.out.printf("\nChange = P%.2f\n", change);
                     }
                 }
 
                 System.out.printf("You have successfully rented Unit No. %s\n", unitId);
-                
-            } 
-            
-            
+
+            }
+
         } catch (SQLException e) {
             System.out.println("Error fetching unit details for payment: " + e.getMessage());
         }
@@ -453,24 +451,36 @@ public class config {
 
     }
 
-    public String getSingleValue1(String sql, Object... params) {
-        String result = null;
-
-        try (Connection conn = connectDB();
+    public static boolean isTenantEligible(int tenantId) {
+        String sql = "SELECT t_status FROM tenants WHERE id = ?";
+        try (Connection conn = config.connectDB();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            setPreparedStatementValues(pstmt, params);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                result = rs.getString(1);
-
+            pstmt.setInt(1, tenantId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next() && rs.getString("t_status").equalsIgnoreCase("Active")) {
+                    return true; // Tenant is eligible
+                }
             }
-
         } catch (SQLException e) {
-            System.out.println("Error retrieving single value: " + e.getMessage());
+            System.out.println("Error checking tenant eligibility: " + e.getMessage());
         }
-        return result;
+        return false;
+    }
 
+    public boolean isUnitAvailable(int unitId) {
+        String sql = "SELECT u_status FROM units WHERE unit_id = ?";
+        try (Connection conn = config.connectDB();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, unitId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next() && rs.getString("u_status").equalsIgnoreCase("Available")) {
+                    return true; // Unit is available
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking unit availability: " + e.getMessage());
+        }
+        return false;
     }
 
 }

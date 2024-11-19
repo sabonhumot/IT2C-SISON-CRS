@@ -8,6 +8,8 @@ public class IT2CSISONCRS {
 
         Scanner input = new Scanner(System.in);
         String response;
+        boolean validChoice = false;
+        int choice = 0;
 
         do {
 
@@ -20,10 +22,26 @@ public class IT2CSISONCRS {
             System.out.println("4. REPORTS");
             System.out.println("5. EXIT");
 
-            System.out.print("Enter action: ");
-            int action = input.nextInt();
+            while (!validChoice) {
+                System.out.print("Enter action: ");
+                String action = input.next().trim();  
 
-            switch (action) {
+                try {
+                    choice = Integer.parseInt(action); 
+
+                    
+                    if (choice >= 1 && choice <= 5) {
+                        validChoice = true;  
+                    } else {
+                        System.out.print("Invalid option. Please choose between 1 and 5.");
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.print("Invalid input. Please enter a valid number between 1 and 5.");
+                }
+            }
+
+            switch (choice) {
 
                 case 1:
                     Tenants tnts = new Tenants();
@@ -47,13 +65,11 @@ public class IT2CSISONCRS {
                     break;
 
                 case 4:
-                    
+
                     Reports rprts = new Reports();
-                    
+
                     rprts.ReportsOp();
-                    
-                    
-                    
+
                     break;
 
                 case 5:

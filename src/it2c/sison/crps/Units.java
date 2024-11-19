@@ -10,6 +10,10 @@ public class Units {
 
         System.out.print("Enter Unit Type: ");
         String utype = input.nextLine();
+        while (utype.isEmpty() || !utype.matches("[a-zA-Z\\s]+")) {
+            System.out.print("Invalid Unit Type. Please enter a valid type: ");
+            utype = input.nextLine();
+        }
 
         System.out.print("Enter Unit Footage (sqm): ");
         String ufootage = input.nextLine();
@@ -26,8 +30,12 @@ public class Units {
         System.out.print("Lease Terms: ");
         String leaseT = input.nextLine();
 
-        System.out.print("Enter Unit Status: ");
+        System.out.print("Enter Unit Status (Available/Occupied): ");
         String ustatus = input.next();
+        while (!ustatus.equalsIgnoreCase("Available") && !ustatus.equalsIgnoreCase("Occupied")) {
+            System.out.println("Invalid status. Please enter either 'Available' or 'Occupied'.");
+            ustatus = input.nextLine();
+        }
 
         String sql = "INSERT INTO units (unit_type, sqm, floor_num, monthly_rental, amenities, lease_terms, u_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         conf.addTenants(sql, utype, ufootage, ufloornum, monthly, amenities, leaseT, ustatus);
@@ -53,7 +61,7 @@ public class Units {
         int id = input.nextInt();
         while (conf.getSingleValue(sql, id) == 0) {
         }
-        
+
         System.out.print("Enter new Monthly Rental: ");
         String monthly = input.next();
 
@@ -88,6 +96,8 @@ public class Units {
         Units units = new Units();
         Scanner input = new Scanner(System.in);
         String response;
+        boolean validChoice = false;
+        int choice = 0;
 
         do {
 
@@ -100,10 +110,25 @@ public class Units {
             System.out.println("4. DELETE UNIT");
             System.out.println("5. EXIT TO MAIN MENU");
 
-            System.out.print("Enter action: ");
-            int action = input.nextInt();
+            while (!validChoice) {
+                System.out.print("Enter action: ");
+                String action = input.next().trim();
 
-            switch (action) {
+                try {
+                    choice = Integer.parseInt(action);
+
+                    if (choice >= 1 && choice <= 5) {
+                        validChoice = true;
+                    } else {
+                        System.out.print("Invalid option. Please choose between 1 and 5: ");
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.print("Invalid input. Please enter a valid number between 1 and 5: ");
+                }
+            }
+
+            switch (choice) {
                 case 1:
                     units.addUnit();
                     break;

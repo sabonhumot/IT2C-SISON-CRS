@@ -14,18 +14,39 @@ public class Tenants {
         System.out.print("Enter Last Name: ");
         String lname = input.next();
 
-        System.out.print("Enter eMail: ");
-        String email = input.next();
+        String email;
+        while (true) {
+            System.out.print("Enter email");
+            email = input.next();
 
-        System.out.print("Enter Contact Number: ");
-        String cntctno = input.next();
-        
-        System.out.print("Enter Status: ");
+            if (isValidEmail(email)) {
+                break;
+            } else {
+                System.out.print("Invalid email format. Please try again: ");
+            }
+        }
+
+        String cntctno;
+        while (true) {
+            System.out.print("Enter Contact Number: ");
+            cntctno = input.next();
+
+            if (isValidPNum(cntctno)) {
+                break;
+            } else {
+                System.out.print("Invalid phone number. Please try again: ");
+            }
+        }
+
+        System.out.print("Enter Status (Active/Inactive): ");
         String status = input.next();
+        while (!status.equalsIgnoreCase("Active") && !status.equalsIgnoreCase("Inactive")) {
+            System.out.println("Invalid status. Please enter either 'Active' or 'Inactive'.");
+            status = input.nextLine();
+        }
 
         String sql = "INSERT INTO tenants (fname, lname, email, contact, t_status) VALUES (?, ?, ?, ?, ?)";
         conf.addTenants(sql, fname, lname, email, cntctno, status);
-              
 
     }
 
@@ -33,7 +54,7 @@ public class Tenants {
         String tqry = "SELECT * FROM tenants";
         String[] hrds = {"ID", "First Name", "Last Name", "Email", "Contact No.", "Status"};
         String[] clmns = {"id", "fname", "lname", "email", "contact", "t_status"};
-        
+
         config conf = new config();
 
         conf.viewRecords(tqry, hrds, clmns);
@@ -75,7 +96,6 @@ public class Tenants {
         config conf = new config();
 
         String sqlDelete = "DELETE FROM tenants WHERE id = ?";
-//        int studentIdToDelete = 1;
 
         conf.deleteRecord(sqlDelete, id);
 
@@ -85,6 +105,8 @@ public class Tenants {
         Tenants tnts = new Tenants();
         Scanner input = new Scanner(System.in);
         String response;
+        boolean validChoice = false;
+        int choice = 0;
 
         do {
 
@@ -97,10 +119,25 @@ public class Tenants {
             System.out.println("4. DELETE TENANT");
             System.out.println("5. EXIT TO MAIN MENU");
 
-            System.out.print("Enter action: ");
-            int action = input.nextInt();
+            while (!validChoice) {
+                System.out.print("Enter action: ");
+                String action = input.next().trim();
 
-            switch (action) {
+                try {
+                    choice = Integer.parseInt(action);
+
+                    if (choice >= 1 && choice <= 5) {
+                        validChoice = true;
+                    } else {
+                        System.out.print("Invalid option. Please choose between 1 and 5: ");
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.print("Invalid input. Please enter a valid number between 1 and 5: ");
+                }
+            }
+
+            switch (choice) {
                 case 1:
                     tnts.addTenants();
                     break;
@@ -134,6 +171,16 @@ public class Tenants {
 
         } while (response.equalsIgnoreCase("yes"));
 
+    }
+
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
+    public static boolean isValidPNum(String phoneNumber) {
+        String phoneRegex = "^[0-9]{11}$";
+        return phoneNumber.matches(phoneRegex);
     }
 
 }

@@ -10,6 +10,8 @@ public class Reports {
     public void ReportsOp() {
         Scanner input = new Scanner(System.in);
         String response;
+        boolean validChoice = false;
+        int choice = 0;
 
         do {
             System.out.println("-------------------------------------");
@@ -19,21 +21,35 @@ public class Reports {
             System.out.println("2. INDIVIDUAL REPORT");
             System.out.println("3. EXIT TO MAIN MENU");
 
-            System.out.print("Enter action: ");
-            int action = input.nextInt();
-            
-            Reports rprts = new Reports();
-            
-            switch (action) {
-                case 1:
+            while (!validChoice) {
+                System.out.print("Enter action: ");
+                String action = input.next().trim();
+                
+                try {
+                    choice = Integer.parseInt(action);
                     
-                   rprts.GeneralReport();
+                    if (choice >= 1 && choice <= 5) {
+                        validChoice = true;
+                    } else {
+                        System.out.print("Invalid option. Please choose between 1 and 3: ");
+                    }
+                    
+                } catch (NumberFormatException e) {
+                    System.out.print("Invalid input. Please enter a valid number between 1 and 3: ");
+                }
+            }
+
+            Reports rprts = new Reports();
+
+            switch (choice) {
+                case 1:
+
+                    rprts.GeneralReport();
 
                     break;
 
                 case 2:
 
-                    
                     rprts.IndividualReport();
 
                     break;
@@ -73,11 +89,11 @@ public class Reports {
         String uQry = "SELECT * FROM units WHERE u_status = 'Occupied'";
         String[] hdrs1 = {"Unit Number", "Unit Type", "Monthly Rental", "Status"};
         String[] clmns1 = {"unit_id", "unit_type", "monthly_rental", "u_status"};
-        
-        LocalDate repGen = LocalDate.now();             
+
+        LocalDate repGen = LocalDate.now();
 
         conf.viewRecords(uQry, hdrs1, clmns1);
-        
+
         System.out.println("\n----------------------------------------------------\n");
         System.out.printf("|             REPORT GENERATED ON %s              |", repGen);
         System.out.println("----------------------------------------------------");
@@ -99,18 +115,18 @@ public class Reports {
             tid = input.nextInt();
         }
 
-        String sql1 = "SELECT t_status FROM tenants WHERE id = ?";
-        String tStatus = conf.getSingleValue1(sql, tid);
+        while (config.isTenantEligible(tid)) {
 
-        if ("Inactive".equalsIgnoreCase(tStatus)) {
-            System.out.println("Tenant is not currently renting a unit.");
-            return;
+            System.out.print("Tenant is not currently renting a unit. Please try again: ");
+            tid = input.nextInt();
+
+            while (conf.getSingleValue(sql, tid) == 0) {
+                System.out.print("Tenant does not exist. Please try again: ");
+                tid = input.nextInt();
+            }
+
         }
 
-//        while ("Inactive".equalsIgnoreCase(tStatus)) {
-//            System.out.print("Tenant is not currently renting a unit. Please try again: ");
-//            tid = input.nextInt();
-//        }
         conf.generateIndividualReport(tid);
 
     }
