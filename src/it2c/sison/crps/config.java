@@ -483,4 +483,44 @@ public class config {
         return false;
     }
 
+    public static String tStatus(int tenantId) {
+        String sql = "SELECT t_status FROM tenants WHERE id = ?";
+        try (Connection conn = config.connectDB(); 
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, tenantId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("t_status");
+            } else {
+                return null; 
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error fetching tenant status: " + e.getMessage());
+            return null;
+        }
+
+    }
+
+    public static String uStatus(int unitId) {
+        String sql = "SELECT u_status FROM units WHERE unit_id = ?";
+        try (Connection conn = config.connectDB();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, unitId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("u_status");
+            } else {
+                return null; 
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking unit availability: " + e.getMessage());
+            return null;
+        }     
+    }
+
 }

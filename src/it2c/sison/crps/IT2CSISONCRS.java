@@ -24,20 +24,19 @@ public class IT2CSISONCRS {
 
             while (!validChoice) {
                 System.out.print("Enter action: ");
-                String action = input.next().trim();  
+                String action = input.next().trim();
 
                 try {
-                    choice = Integer.parseInt(action); 
+                    choice = Integer.parseInt(action);
 
-                    
                     if (choice >= 1 && choice <= 5) {
-                        validChoice = true;  
+                        validChoice = true;
                     } else {
-                        System.out.print("Invalid option. Please choose between 1 and 5.");
+                        System.out.print("Invalid option. Please choose between 1 and 5.\n");
                     }
 
                 } catch (NumberFormatException e) {
-                    System.out.print("Invalid input. Please enter a valid number between 1 and 5.");
+                    System.out.print("Invalid input. Please enter a valid number between 1 and 5.\n");
                 }
             }
 
@@ -75,9 +74,6 @@ public class IT2CSISONCRS {
                 case 5:
                     System.out.println("Exiting the program. Goodbye !");
                     System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
                     break;
             }
             System.out.print("Do you want to continue to Main Menu? (yes/no): ");

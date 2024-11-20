@@ -9,7 +9,7 @@ public class Reports {
 
     public void ReportsOp() {
         Scanner input = new Scanner(System.in);
-        String response;
+        String response = "";
         boolean validChoice = false;
         int choice = 0;
 
@@ -24,18 +24,18 @@ public class Reports {
             while (!validChoice) {
                 System.out.print("Enter action: ");
                 String action = input.next().trim();
-                
+
                 try {
                     choice = Integer.parseInt(action);
-                    
-                    if (choice >= 1 && choice <= 5) {
+
+                    if (choice >= 1 && choice <= 3) {
                         validChoice = true;
                     } else {
-                        System.out.print("Invalid option. Please choose between 1 and 3: ");
+                        System.out.print("Invalid option. Please choose between 1 and 3.\n ");
                     }
-                    
+
                 } catch (NumberFormatException e) {
-                    System.out.print("Invalid input. Please enter a valid number between 1 and 3: ");
+                    System.out.print("Invalid input. Please enter a valid number between 1 and 3.\n ");
                 }
             }
 
@@ -57,12 +57,24 @@ public class Reports {
                 case 3:
                     System.out.println("Returning to Main Menu...\n");
                     return;
-                default:
-                    System.out.println("Invalid Option. Please try again.");
-                    break;
             }
-            System.out.print("Continue to Main Menu? (yes/no): ");
-            response = input.next();
+            
+            input.nextLine();
+            
+            boolean validResponse = false;
+            
+            while (!validResponse) {
+                System.out.print("Do you want to continue to Main Menu? (yes/no): ");
+                response = input.next();
+
+                if (response.isEmpty()) {
+                    System.out.print("Input cannot be empty. Please input 'yes' or 'no'.");
+                } else if (response.equalsIgnoreCase("yes") || response.equalsIgnoreCase("no")) {
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please input 'yes' or 'no'.");
+                }
+            }
 
         } while (response.equalsIgnoreCase("yes"));
 

@@ -10,19 +10,27 @@ public class Tenants {
 
         System.out.print("Enter First Name: ");
         String fname = input.next();
+        while (fname.isEmpty() || !fname.matches("[a-zA-Z]+")) {
+            System.out.print("First Name cannot be empty and must only contain letters. Please enter again: ");
+            fname = input.next();
+        }
 
         System.out.print("Enter Last Name: ");
         String lname = input.next();
+        while (lname.isEmpty() || !lname.matches("[a-zA-Z]+")) {
+            System.out.print("Last Name cannot be empty and must only contain letters. Please enter again: ");
+            lname = input.next();
+        }
 
         String email;
         while (true) {
-            System.out.print("Enter email");
+            System.out.print("Enter email: ");
             email = input.next();
 
             if (isValidEmail(email)) {
                 break;
             } else {
-                System.out.print("Invalid email format. Please try again: ");
+                System.out.print("Invalid email format. Please try again.\n");
             }
         }
 
@@ -34,14 +42,14 @@ public class Tenants {
             if (isValidPNum(cntctno)) {
                 break;
             } else {
-                System.out.print("Invalid phone number. Please try again: ");
+                System.out.print("Invalid phone number. Please try again.\n");
             }
         }
 
         System.out.print("Enter Status (Active/Inactive): ");
         String status = input.next();
         while (!status.equalsIgnoreCase("Active") && !status.equalsIgnoreCase("Inactive")) {
-            System.out.println("Invalid status. Please enter either 'Active' or 'Inactive'.");
+            System.out.print("Invalid status. Please enter either 'Active' or 'Inactive': ");
             status = input.nextLine();
         }
 
@@ -90,10 +98,16 @@ public class Tenants {
     private void deleteTenant() {
         Scanner input = new Scanner(System.in);
 
+        config conf = new config();
+
         System.out.print("Enter ID to Delete: ");
         int id = input.nextInt();
 
-        config conf = new config();
+        while (conf.tStatus(id).equalsIgnoreCase("Active")) {
+            System.out.print("You cannot delete an Active Tenant. Please Try again: ");
+            id = input.nextInt();
+             
+        }
 
         String sqlDelete = "DELETE FROM tenants WHERE id = ?";
 
@@ -104,7 +118,7 @@ public class Tenants {
     public void TenantsOp() {
         Tenants tnts = new Tenants();
         Scanner input = new Scanner(System.in);
-        String response;
+        String response = "";
         boolean validChoice = false;
         int choice = 0;
 
@@ -162,12 +176,23 @@ public class Tenants {
                     System.out.println("\nReturning to Main Menu...");
                     return;
 
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
             }
-            System.out.print("Continue to Tenants Panel? (yes/no): ");
-            response = input.next();
+
+            input.nextLine();
+
+            boolean validResponse = false;
+            while (!validResponse) {
+                System.out.print("Do you want to continue to Main Menu? (yes/no): ");
+                response = input.nextLine().trim();
+
+                if (response.equalsIgnoreCase("yes") || response.equalsIgnoreCase("no")) {
+                    validResponse = true;
+                } else if (response.isEmpty()) {
+                    System.out.println("Input cannot be empty. Please try again.");
+                } else {
+                    System.out.println("Invalid input. Please type 'yes' or 'no'.");
+                }
+            }
 
         } while (response.equalsIgnoreCase("yes"));
 

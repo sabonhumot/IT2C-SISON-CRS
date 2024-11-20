@@ -79,14 +79,21 @@ public class Units {
 
     private void deleteUnit() {
         Scanner input = new Scanner(System.in);
+        
+        config conf = new config();
 
         System.out.print("Enter ID to Delete: ");
         int id = input.nextInt();
 
-        config conf = new config();
+        while (conf.tStatus(id).equalsIgnoreCase("Occupied")) {
+            System.out.print("You cannot delete an Occupied Unit. Please try again: ");
+            id = input.nextInt();
+
+        }
+
+        
 
         String sqlDelete = "DELETE FROM units WHERE unit_id = ?";
-//        int studentIdToDelete = 1;
 
         conf.deleteRecord(sqlDelete, id);
 
@@ -95,7 +102,7 @@ public class Units {
     public void UnitsOp() {
         Units units = new Units();
         Scanner input = new Scanner(System.in);
-        String response;
+        String response = "";
         boolean validChoice = false;
         int choice = 0;
 
@@ -153,13 +160,24 @@ public class Units {
                     System.out.println("\nReturning to Main Menu...\n");
                     return;
 
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
             }
-            System.out.print("Continue to Units Panel? (yes/no): ");
-            response = input.next();
 
+            input.nextLine();
+
+            boolean validResponse = false;
+
+            while (!validResponse) {
+                System.out.print("Do you want to continue to Main Menu? (yes/no): ");
+                response = input.next();
+
+                if (response.isEmpty()) {
+                    System.out.print("Input cannot be empty. Please input 'yes' or 'no'.");
+                } else if (response.equalsIgnoreCase("yes") || response.equalsIgnoreCase("no")) {
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please input 'yes' or 'no'.");
+                }
+            }
         } while (response.equalsIgnoreCase("yes"));
 
     }
