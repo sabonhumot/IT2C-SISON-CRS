@@ -295,7 +295,7 @@ public class config {
                 System.out.printf("Amount needed to pay: P%s\n", monthlyRental);
 
                 System.out.print("Enter amount to pay: ");
-                int pay = input.nextInt();
+                double pay = input.nextDouble();
                 double change = 0.0;
 
                 while (pay < monthlyRental) {
@@ -303,7 +303,7 @@ public class config {
                     pay = input.nextInt();
 
                     if (pay > monthlyRental) {
-                        change = (double) pay - monthlyRental;
+                        change = pay - monthlyRental;
 
                         System.out.printf("\nChange = P%.2f\n", change);
                     }
@@ -359,20 +359,21 @@ public class config {
 
                         System.out.println("\n--------------------------------------------------------------");
 
-                        System.out.printf("\n -Tenant ID: %d", id);
-                        System.out.printf("\n -First Name: %s", firstName);
-                        System.out.printf("\n -Last Name: %s", lastName);
-                        System.out.printf("\n -Email: %s", email);
-                        System.out.printf("\n -Contact: %s", contact);
+                        System.out.printf("\n - Tenant ID: %d", id);
+                        System.out.printf("\n - First Name: %s", firstName);
+                        System.out.printf("\n - Last Name: %s", lastName);
+                        System.out.printf("\n - Email: %s", email);
+                        System.out.printf("\n - Contact: %s", contact);
                         System.out.println("\n--------------------------------------------------------------");
-                        System.out.printf("\n -Unit ID: %d", unitId);
-                        System.out.printf("\n -Unit Type: %s", unitType);
-                        System.out.printf("\n -Monthly Rental: %.2f", monthlyRental);
-                        System.out.printf("\n -Amenities: %s", amenities);
+                        System.out.printf("\n - Unit ID: %d", unitId);
+                        System.out.printf("\n - Unit Type: %s", unitType);
+                        System.out.printf("\n - Monthly Rental: %.2f", monthlyRental);
+                        System.out.printf("\n - Amenities: %s", amenities);
+                        System.out.println("");
                         conf.generateLeaseDates(unitId);
-                        System.out.printf("\n-Unit Status: %s", unitStatus);
+                        System.out.printf("\n- Unit Status: %s", unitStatus);
 
-                        System.out.println("\n--------------------------------------------------------------");
+                        System.out.println("\n------------------------------------------------------------------------");
 
                         LocalDate repGen = LocalDate.now();
                         System.out.printf("REPORT GENERATED ON %s\n", repGen);

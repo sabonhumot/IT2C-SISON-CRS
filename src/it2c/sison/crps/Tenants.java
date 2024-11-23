@@ -71,13 +71,31 @@ public class Tenants {
     private void updateTenant() {
         Scanner input = new Scanner(System.in);
         config conf = new config();
+        int id = 0;
+        boolean validId = false;
+
+        while (!validId) {
+            System.out.print("Enter Tenant ID to Update: ");
+            String uInput = input.next().trim();
+
+            try {
+                id = Integer.parseInt(uInput);
+
+                if (id > 0) {
+                    validId = true;
+                } else {
+                    System.out.println("Tenant ID must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+            }
+        }
 
         String sql = "SELECT id FROM tenants WHERE id = ?";
-
-        System.out.print("Enter Tenant ID: ");
-        int id = input.nextInt();
         while (conf.getSingleValue(sql, id) == 0) {
-
+            System.out.print("Tenant does not exist. Please try again: ");
+            id = input.nextInt();
         }
 
         System.out.print("Enter new Email: ");
@@ -97,16 +115,44 @@ public class Tenants {
 
     private void deleteTenant() {
         Scanner input = new Scanner(System.in);
+        int id = 0;
+        boolean validId = false;
 
         config conf = new config();
 
-        System.out.print("Enter ID to Delete: ");
-        int id = input.nextInt();
+        while (!validId) {
+            System.out.print("Enter Tenant ID to Delete: ");
+            String uInput = input.next().trim();
+
+            try {
+                id = Integer.parseInt(uInput);
+
+                if (id > 0) {
+                    validId = true;
+                } else {
+                    System.out.println("Tenant ID must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+            }
+        }
+
+        String sql = "SELECT id FROM tenants WHERE id = ?";
+        while (conf.getSingleValue(sql, id) == 0) {
+            System.out.print("Tenant does not exist. Please try again: ");
+            id = input.nextInt();
+        }
 
         while (conf.tStatus(id).equalsIgnoreCase("Active")) {
             System.out.print("You cannot delete an Active Tenant. Please Try again: ");
             id = input.nextInt();
-             
+
+            while (conf.getSingleValue(sql, id) == 0) {
+                System.out.print("Tenant does not exist. Please try again: ");
+                id = input.nextInt();
+            }
+
         }
 
         String sqlDelete = "DELETE FROM tenants WHERE id = ?";
@@ -119,10 +165,11 @@ public class Tenants {
         Tenants tnts = new Tenants();
         Scanner input = new Scanner(System.in);
         String response = "";
-        boolean validChoice = false;
+
         int choice = 0;
 
         do {
+            boolean validChoice = false;
 
             System.out.println("-------------------------------------");
             System.out.println("|            TENANT PANEL           |");
@@ -178,15 +225,17 @@ public class Tenants {
 
             }
 
-            input.nextLine();
-
             boolean validResponse = false;
+            input.nextLine();
             while (!validResponse) {
-                System.out.print("Do you want to continue to Main Menu? (yes/no): ");
+
+                System.out.print("Do you want to continue to Tenants Menu? (yes/no): ");
                 response = input.nextLine().trim();
 
                 if (response.equalsIgnoreCase("yes") || response.equalsIgnoreCase("no")) {
+
                     validResponse = true;
+
                 } else if (response.isEmpty()) {
                     System.out.println("Input cannot be empty. Please try again.");
                 } else {

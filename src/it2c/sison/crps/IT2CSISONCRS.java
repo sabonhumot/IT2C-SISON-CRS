@@ -8,10 +8,11 @@ public class IT2CSISONCRS {
 
         Scanner input = new Scanner(System.in);
         String response;
-        boolean validChoice = false;
         int choice = 0;
 
         do {
+
+            boolean validChoice = false;
 
             System.out.println("-------------------------------------");
             System.out.println("|        CONDO RENTAL SYSTEM        |");

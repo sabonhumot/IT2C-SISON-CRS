@@ -10,10 +10,12 @@ public class Reports {
     public void ReportsOp() {
         Scanner input = new Scanner(System.in);
         String response = "";
-        boolean validChoice = false;
+
         int choice = 0;
 
         do {
+            boolean validChoice = false;
+
             System.out.println("-------------------------------------");
             System.out.println("|           REPORTS PANEL           |");
             System.out.println("-------------------------------------");
@@ -58,14 +60,14 @@ public class Reports {
                     System.out.println("Returning to Main Menu...\n");
                     return;
             }
-            
+
             input.nextLine();
-            
+
             boolean validResponse = false;
-            
+
             while (!validResponse) {
-                System.out.print("Do you want to continue to Main Menu? (yes/no): ");
-                response = input.next();
+                System.out.print("Do you want to continue to Reports Menu? (yes/no): ");
+                response = input.next().trim();
 
                 if (response.isEmpty()) {
                     System.out.print("Input cannot be empty. Please input 'yes' or 'no'.");
@@ -106,20 +108,40 @@ public class Reports {
 
         conf.viewRecords(uQry, hdrs1, clmns1);
 
-        System.out.println("\n----------------------------------------------------\n");
+        System.out.println("\n--------------------------------------------------------------");
         System.out.printf("|             REPORT GENERATED ON %s              |", repGen);
-        System.out.println("----------------------------------------------------");
+        System.out.println("\n--------------------------------------------------------------");
 
     }
 
     private void IndividualReport() {
         Scanner input = new Scanner(System.in);
         Tenants tnts = new Tenants();
+        int tid = 0;
+        boolean validId = false;
 
         tnts.viewTenants();
 
-        System.out.print("Enter Tenant ID: ");
-        int tid = input.nextInt();
+        while (!validId) {
+
+            System.out.print("Enter Tenant ID: ");
+            String uInput = input.next().trim();
+
+            try {
+
+                tid = Integer.parseInt(uInput);
+
+                if (tid > 0) {
+                    validId = true;
+                } else {
+                    System.out.println("Tenant ID must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+            }
+
+        }
 
         String sql = "SELECT id FROM tenants WHERE id = ?";
         while (conf.getSingleValue(sql, tid) == 0) {
@@ -127,7 +149,7 @@ public class Reports {
             tid = input.nextInt();
         }
 
-        while (config.isTenantEligible(tid)) {
+        while (!config.isTenantEligible(tid)) {
 
             System.out.print("Tenant is not currently renting a unit. Please try again: ");
             tid = input.nextInt();

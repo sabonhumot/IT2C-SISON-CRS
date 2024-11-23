@@ -27,7 +27,7 @@ public class Rental {
             tid = input.nextInt();
         }
 
-        while (!config.isTenantEligible(tid)) {
+        while (config.isTenantEligible(tid)) {
 
             System.out.print("Tenant is already renting a unit. Please try again: ");
             tid = input.nextInt();
@@ -50,7 +50,7 @@ public class Rental {
             unum = input.nextInt();
         }
 
-        while (!conf.isUnitAvailable(tid)) {
+        while (conf.isUnitAvailable(tid)) {
 
             System.out.print("Unit is already occupied. Please try again: ");
             unum = input.nextInt();
@@ -58,35 +58,34 @@ public class Rental {
             while (conf.getSingleValue(sql2, unum) == 0) {
                 System.out.print("Unit does not exist. Please try again: ");
                 unum = input.nextInt();
-
             }
-
-            conf.fetchUnitDetails(unum);
-
-            conf.reservationConfirmation(unum);
-
-            conf.leaseAgreement(unum);
-
-            conf.generateLeaseDates(unum);
-
-            System.out.print("\nWould you like to proceed to payment? (yes/no): ");
-            String response = input.next();
-
-            if (response.equalsIgnoreCase("yes")) {
-
-                String sql4 = "UPDATE units SET u_status = 'Occupied' WHERE unit_id = ?";
-                String sql6 = "UPDATE tenants SET t_status = 'Active' WHERE id = ?";
-
-                conf.updateRecord(sql4, unum);
-                conf.addRental(tid, unum);
-                conf.updateRecord(sql6, tid);
-
-                conf.payment(unum);
-            } else {
-                System.out.println("You chose not to rent this unit.");
-            }
-
         }
+
+        conf.fetchUnitDetails(unum);
+
+        conf.reservationConfirmation(unum);
+
+        conf.leaseAgreement(unum);
+
+        conf.generateLeaseDates(unum);
+
+        System.out.print("\nWould you like to proceed to payment? (yes/no): ");
+        String response = input.next();
+
+        if (response.equalsIgnoreCase("yes")) {
+
+            String sql4 = "UPDATE units SET u_status = 'Occupied' WHERE unit_id = ?";
+            String sql6 = "UPDATE tenants SET t_status = 'Active' WHERE id = ?";
+
+            conf.updateRecord(sql4, unum);
+            conf.addRental(tid, unum);
+            conf.updateRecord(sql6, tid);
+
+            conf.payment(unum);
+        } else {
+            System.out.println("You chose not to rent this unit.");
+        }
+
     }
 
     private void viewAvailableUnits() {

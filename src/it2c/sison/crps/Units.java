@@ -10,28 +10,84 @@ public class Units {
 
         System.out.print("Enter Unit Type: ");
         String utype = input.nextLine();
-        while (utype.isEmpty() || !utype.matches("[a-zA-Z\\s]+")) {
-            System.out.print("Invalid Unit Type. Please enter a valid type: ");
-            utype = input.nextLine();
+
+        String ufootage;
+        while (true) {
+
+            System.out.print("Enter Unit Footage (sqm): ");
+            ufootage = input.nextLine().trim();
+
+            try {
+
+                if (Double.parseDouble(ufootage) > 0) {
+                    break;
+                } else {
+                    System.out.println("Size must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number value.");
+            }
+
         }
 
-        System.out.print("Enter Unit Footage (sqm): ");
-        String ufootage = input.nextLine();
+        String ufloornum;
+        while (true) {
 
-        System.out.print("Enter Unit Floor Number: ");
-        String ufloornum = input.nextLine();
+            System.out.print("Enter Unit Floor Number: ");
+            ufloornum = input.nextLine().trim();
 
-        System.out.print("Enter Monthly Rental: ");
-        String monthly = input.nextLine();
+            try {
+
+                if (Integer.parseInt(ufloornum) > 0) {
+                    break;
+                } else {
+                    System.out.println("Floor Number must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number value.");
+            }
+        }
+
+        String monthly;
+        while (true) {
+
+            System.out.print("Enter Monthly Rental (Include centavos if applicable): ");
+            monthly = input.nextLine();
+
+            try {
+                if (Double.parseDouble(monthly) > 0) {
+                    break;
+                } else {
+                    System.out.println("Monthly Rental must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number value.");
+            }
+        }
 
         System.out.print("Amenities Included: ");
         String amenities = input.nextLine();
 
-        System.out.print("Lease Terms: ");
-        String leaseT = input.nextLine();
+        String leaseT;
+
+        while (true) {
+
+            System.out.print("Lease Terms (1 - 12): ");
+            leaseT = input.nextLine().trim();
+
+            if (leaseT.matches("[1-9]|1[0-2]")) {
+                break;
+            } else {
+                System.out.println("Invalid input. Please enter a number between 1 and 12.");
+
+            }
+        }
 
         System.out.print("Enter Unit Status (Available/Occupied): ");
-        String ustatus = input.next();
+        String ustatus = input.next().trim();
         while (!ustatus.equalsIgnoreCase("Available") && !ustatus.equalsIgnoreCase("Occupied")) {
             System.out.println("Invalid status. Please enter either 'Available' or 'Occupied'.");
             ustatus = input.nextLine();
@@ -55,11 +111,31 @@ public class Units {
     private void updateUnit() {
         Scanner input = new Scanner(System.in);
         config conf = new config();
-        String sql = "SELECT unit_id FROM units WHERE unit_id = ?";
+        int id = 0;
+        boolean validId = false;
 
-        System.out.print("Enter Unit ID: ");
-        int id = input.nextInt();
+        while (!validId) {
+            System.out.print("Enter Unit ID: ");
+            String uInput = input.next().trim();
+
+            try {
+
+                id = Integer.parseInt(uInput);
+
+                if (id > 0) {
+                    validId = true;
+                } else {
+                    System.out.println("Unit ID must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+            }
+        }
+
+        String sql = "SELECT unit_id FROM units WHERE unit_id = ?";
         while (conf.getSingleValue(sql, id) == 0) {
+            System.out.println("Unit does not exist. Please try again.");
         }
 
         System.out.print("Enter new Monthly Rental: ");
@@ -79,19 +155,35 @@ public class Units {
 
     private void deleteUnit() {
         Scanner input = new Scanner(System.in);
-        
         config conf = new config();
+        int id = 0;
+        boolean validId = false;
 
-        System.out.print("Enter ID to Delete: ");
-        int id = input.nextInt();
+        while (!validId) {
+
+            System.out.print("Enter Unit ID to Delete: ");
+            String uInput = input.next().trim();
+
+            try {
+                id = Integer.parseInt(uInput);
+
+                if (id > 0) {
+                    validId = true;
+                } else {
+                    System.out.println("Unit ID must be a number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+            }
+
+        }
 
         while (conf.tStatus(id).equalsIgnoreCase("Occupied")) {
             System.out.print("You cannot delete an Occupied Unit. Please try again: ");
             id = input.nextInt();
 
         }
-
-        
 
         String sqlDelete = "DELETE FROM units WHERE unit_id = ?";
 
@@ -103,10 +195,11 @@ public class Units {
         Units units = new Units();
         Scanner input = new Scanner(System.in);
         String response = "";
-        boolean validChoice = false;
+
         int choice = 0;
 
         do {
+            boolean validChoice = false;
 
             System.out.println("-------------------------------------");
             System.out.println("|             UNIT PANEL            |");
@@ -167,7 +260,7 @@ public class Units {
             boolean validResponse = false;
 
             while (!validResponse) {
-                System.out.print("Do you want to continue to Main Menu? (yes/no): ");
+                System.out.print("Do you want to continue to Units Menu? (yes/no): ");
                 response = input.next();
 
                 if (response.isEmpty()) {
