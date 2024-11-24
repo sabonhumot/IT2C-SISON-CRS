@@ -86,12 +86,15 @@ public class Units {
             }
         }
 
-        System.out.print("Enter Unit Status (Available/Occupied): ");
-        String ustatus = input.next().trim();
-        while (!ustatus.equalsIgnoreCase("Available") && !ustatus.equalsIgnoreCase("Occupied")) {
-            System.out.println("Invalid status. Please enter either 'Available' or 'Occupied'.");
-            ustatus = input.nextLine();
-        }
+//        System.out.print("Enter Unit Status (Available/Occupied): ");
+//        String ustatus = input.next().trim();
+//        while (!ustatus.equalsIgnoreCase("Available") && !ustatus.equalsIgnoreCase("Occupied")) {
+//            System.out.println("Invalid status. Please enter either 'Available' or 'Occupied'.");
+//            ustatus = input.nextLine();
+//        }
+
+        String ustatus = "Occupied";
+
 
         String sql = "INSERT INTO units (unit_type, sqm, floor_num, monthly_rental, amenities, lease_terms, u_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         conf.addTenants(sql, utype, ufootage, ufloornum, monthly, amenities, leaseT, ustatus);

@@ -46,15 +46,20 @@ public class Tenants {
             }
         }
 
-        System.out.print("Enter Status (Active/Inactive): ");
-        String status = input.next();
-        while (!status.equalsIgnoreCase("Active") && !status.equalsIgnoreCase("Inactive")) {
-            System.out.print("Invalid status. Please enter either 'Active' or 'Inactive': ");
-            status = input.nextLine();
-        }
+//        System.out.print("Enter Status (Active/Inactive): ");
+//        String status = input.next();
+//        while (!status.equalsIgnoreCase("Active") && !status.equalsIgnoreCase("Inactive")) {
+//            System.out.print("Invalid status. Please enter either 'Active' or 'Inactive': ");
+//            status = input.nextLine();
+//        }
+
+        String status = "Inactive";
 
         String sql = "INSERT INTO tenants (fname, lname, email, contact, t_status) VALUES (?, ?, ?, ?, ?)";
         conf.addTenants(sql, fname, lname, email, cntctno, status);
+        
+        
+        
 
     }
 
