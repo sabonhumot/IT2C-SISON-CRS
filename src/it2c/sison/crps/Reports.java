@@ -97,7 +97,7 @@ public class Reports {
         conf.viewRecords(tQry, hdrs, clmns);
 
         System.out.println("\n----------------------------------------------------");
-        System.out.println("|             SUMMARY OF Rented UNITS              |");
+        System.out.println("|             SUMMARY OF RENTED UNITS              |");
         System.out.println("----------------------------------------------------");
 
         String uQry = "SELECT * FROM units WHERE u_status = 'Occupied'";

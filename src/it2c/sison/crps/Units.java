@@ -92,9 +92,7 @@ public class Units {
 //            System.out.println("Invalid status. Please enter either 'Available' or 'Occupied'.");
 //            ustatus = input.nextLine();
 //        }
-
-        String ustatus = "Occupied";
-
+        String ustatus = "Available";
 
         String sql = "INSERT INTO units (unit_type, sqm, floor_num, monthly_rental, amenities, lease_terms, u_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         conf.addTenants(sql, utype, ufootage, ufloornum, monthly, amenities, leaseT, ustatus);

@@ -301,12 +301,12 @@ public class config {
                 while (pay < monthlyRental) {
                     System.out.print("Payment insufficient. Please try again: ");
                     pay = input.nextInt();
+                }
 
-                    if (pay > monthlyRental) {
-                        change = pay - monthlyRental;
+                if (pay > monthlyRental) {
+                    change = pay - monthlyRental;
 
-                        System.out.printf("\nChange = P%.2f\n", change);
-                    }
+                    System.out.printf("\nChange = P%.2f\n", change);
                 }
 
                 System.out.printf("You have successfully rented Unit No. %s\n", unitId);
@@ -367,7 +367,7 @@ public class config {
                         System.out.println("\n--------------------------------------------------------------");
                         System.out.printf("\n - Unit ID: %d", unitId);
                         System.out.printf("\n - Unit Type: %s", unitType);
-                        System.out.printf("\n - Monthly Rental: %.2f", monthlyRental);
+                        System.out.printf("\n - Monthly Rental: P%.2f", monthlyRental);
                         System.out.printf("\n - Amenities: %s", amenities);
                         System.out.println("");
                         conf.generateLeaseDates(unitId);
@@ -486,7 +486,7 @@ public class config {
 
     public static String tStatus(int tenantId) {
         String sql = "SELECT t_status FROM tenants WHERE id = ?";
-        try (Connection conn = config.connectDB(); 
+        try (Connection conn = config.connectDB();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, tenantId);
@@ -495,7 +495,7 @@ public class config {
             if (rs.next()) {
                 return rs.getString("t_status");
             } else {
-                return null; 
+                return null;
             }
 
         } catch (SQLException e) {
@@ -516,12 +516,12 @@ public class config {
             if (rs.next()) {
                 return rs.getString("u_status");
             } else {
-                return null; 
+                return null;
             }
         } catch (SQLException e) {
             System.out.println("Error checking unit availability: " + e.getMessage());
             return null;
-        }     
+        }
     }
 
 }
