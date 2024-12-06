@@ -159,6 +159,8 @@ public class Units {
         config conf = new config();
         int id = 0;
         boolean validId = false;
+        
+
 
         while (!validId) {
 
@@ -179,8 +181,10 @@ public class Units {
             }
 
         }
+        
+        
 
-        while (conf.tStatus(id).equalsIgnoreCase("Occupied")) {
+        while (conf.uStatus(id).equalsIgnoreCase("Occupied")) {
             System.out.print("You cannot delete an Occupied Unit. Please try again: ");
             id = input.nextInt();
 

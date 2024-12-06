@@ -505,6 +505,7 @@ public class config {
 
     }
 
+
     public static String uStatus(int unitId) {
         String sql = "SELECT u_status FROM units WHERE unit_id = ?";
         try (Connection conn = config.connectDB();
