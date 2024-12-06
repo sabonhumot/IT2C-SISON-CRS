@@ -99,11 +99,29 @@ public class Tenants {
             id = input.nextInt();
         }
 
-        System.out.print("Enter new Email: ");
-        String uemail = input.next();
+        String uemail;
+        while (true) {
+            System.out.print("Enter new email: ");
+            uemail = input.next();
 
-        System.out.print("Enter new Contact Number: ");
-        String ucontact = input.next();
+            if (isValidEmail(uemail)) {
+                break;
+            } else {
+                System.out.print("Invalid email format. Please try again.\n");
+            }
+        }
+
+        String ucontact;
+        while (true) {
+            System.out.print("Enter Contact Number: ");
+            ucontact = input.next();
+
+            if (isValidPNum(ucontact)) {
+                break;
+            } else {
+                System.out.print("Invalid phone number. Please try again.\n");
+            }
+        }
 
         System.out.print("Enter new Tenant Status: ");
         String status = input.next();

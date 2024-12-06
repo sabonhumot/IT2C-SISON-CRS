@@ -139,8 +139,23 @@ public class Units {
             System.out.println("Unit does not exist. Please try again.");
         }
 
-        System.out.print("Enter new Monthly Rental: ");
-        String monthly = input.next();
+        String monthly;
+        while (true) {
+
+            System.out.print("Enter Monthly Rental (Include centavos if applicable): ");
+            monthly = input.nextLine();
+
+            try {
+                if (Double.parseDouble(monthly) > 0) {
+                    break;
+                } else {
+                    System.out.println("Monthly Rental must be a positive number. Please try again.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number value.");
+            }
+        }
 
         System.out.print("Enter new Amenities Included: ");
         String amenities = input.next();
@@ -159,8 +174,6 @@ public class Units {
         config conf = new config();
         int id = 0;
         boolean validId = false;
-        
-
 
         while (!validId) {
 
@@ -181,8 +194,6 @@ public class Units {
             }
 
         }
-        
-        
 
         while (conf.uStatus(id).equalsIgnoreCase("Occupied")) {
             System.out.print("You cannot delete an Occupied Unit. Please try again: ");
